@@ -10,6 +10,7 @@ namespace RetoZara
 	{
 		string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
 			"jul", "ago", "sep", "oct", "nov", "dic" };
+
 		public DateTime DateConverter(string date)
 		{
 			var values = date.Split('-');
@@ -17,14 +18,14 @@ namespace RetoZara
 			return new DateTime(Int32.Parse(values[2]), month + 1, Int32.Parse(values[0]));
 		}
 
-		public void ImportCSV(string csvPath)
+		public DataTable ImportCSV(string csvPath)
 		{
 			string[] tempStringA;
 			DataTable dt = new DataTable();
 			dt.Columns.AddRange(new DataColumn[3]
 			{new DataColumn("Fecha", typeof(DateTime)),
-			new DataColumn("Apertura", typeof(string)),
-			new DataColumn("Cierre",typeof(string)) });
+			new DataColumn("Apertura", typeof(decimal)),
+			new DataColumn("Cierre",typeof(decimal)) });
 
 			string csvData = File.ReadAllText(csvPath);
 			string[] rows = csvData.Split('\n');
@@ -34,17 +35,20 @@ namespace RetoZara
 				if (!string.IsNullOrEmpty(row))
 				{
 					dt.Rows.Add();
-					tempStringA = row.Split(',');
+					tempStringA = row.Split(';');
 					dt.Rows[dt.Rows.Count - 1][0] = DateConverter(tempStringA[0]);
-					dt.Rows[dt.Rows.Count - 1][1] = tempStringA[1];
-					dt.Rows[dt.Rows.Count - 1][2] = tempStringA[2];
+					dt.Rows[dt.Rows.Count - 1][1] = Decimal.Parse(tempStringA[1]);
+					dt.Rows[dt.Rows.Count - 1][2] = Decimal.Parse(tempStringA[2]);
 				}
 			}
+			return dt;
 		}
 		static void Main(string[] args)
 		{
 			FileManager fm = new FileManager();
-			Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
+			//Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
+			DataTable dt = fm.ImportCSV("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
+			Console.WriteLine(dt.ToString());
 			Console.ReadLine();
 		}
 	}
