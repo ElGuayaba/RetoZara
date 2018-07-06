@@ -49,7 +49,7 @@ namespace RetoZara
 			//Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
 			DataTable dt = fm.ImportCSV("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
 			DataRow[] rows = dt.Select();
-			Console.WriteLine(rows[0].Field<DateTime>(0));
+			Console.WriteLine(rows[100].Field<Decimal>(2));
 			Console.ReadLine();
 		}
 	}
