@@ -30,12 +30,12 @@ namespace RetoZara
 			string csvData = File.ReadAllText(csvPath);
 			string[] rows = csvData.Split('\n');
  
-			foreach (string row in rows)
+			for (int i = 1; i < rows.Length; i++)
 			{
-				if (!string.IsNullOrEmpty(row))
+				if (!string.IsNullOrEmpty(rows[i]))
 				{
 					dt.Rows.Add();
-					tempStringA = row.Split(';');
+					tempStringA = rows[i].Split(';');
 					dt.Rows[dt.Rows.Count - 1][0] = DateConverter(tempStringA[0]);
 					dt.Rows[dt.Rows.Count - 1][1] = Decimal.Parse(tempStringA[1], nfi);
 					dt.Rows[dt.Rows.Count - 1][2] = Decimal.Parse(tempStringA[2], nfi);
@@ -49,7 +49,7 @@ namespace RetoZara
 			//Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
 			DataTable dt = fm.ImportCSV("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
 			DataRow[] rows = dt.Select();
-			Console.WriteLine(rows[0].Field<Decimal>(1));
+			Console.WriteLine(rows[0].Field<DateTime>(0));
 			Console.ReadLine();
 		}
 	}
