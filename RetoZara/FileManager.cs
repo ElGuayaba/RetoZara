@@ -7,8 +7,9 @@ namespace RetoZara
 {
 	public class FileManager
 	{
-		string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
+		private string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
 			"jul", "ago", "sep", "oct", "nov", "dic" };
+		private NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 
 		public DateTime DateConverter(string date)
 		{
@@ -19,7 +20,6 @@ namespace RetoZara
 
 		public DataTable ImportCSV(string csvPath)
 		{
-			NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 			string[] tempStringA;
 			DataTable dt = new DataTable();
 			dt.Columns.AddRange(new DataColumn[3]
@@ -43,14 +43,14 @@ namespace RetoZara
 			}
 			return dt;
 		}
-		static void Main(string[] args)
-		{
-			FileManager fm = new FileManager();
-			//Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
-			DataTable dt = fm.ImportCSV("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
-			DataRow[] rows = dt.Select();
-			Console.WriteLine(rows[100].Field<Decimal>(2));
-			Console.ReadLine();
-		}
+		//static void Main(string[] args)
+		//{
+		//	FileManager fm = new FileManager();
+		//	//Console.WriteLine(fm.DateConverter("28-dic-2017").ToString());
+		//	DataTable dt = fm.ImportCSV("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
+		//	DataRow[] rows = dt.Select();
+		//	Console.WriteLine(rows[100].Field<Decimal>(2));
+		//	Console.ReadLine();
+		//}
 	}
 }
