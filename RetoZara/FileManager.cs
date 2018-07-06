@@ -20,20 +20,15 @@ namespace RetoZara
 		public void ImportCSV(string csvPath)
 		{
 			string[] tempStringA;
-			//var tempDate;
-			//var tempShare;
-			//Create a DataTable.  
 			DataTable dt = new DataTable();
 			dt.Columns.AddRange(new DataColumn[3]
 			{new DataColumn("Fecha", typeof(DateTime)),
 			new DataColumn("Apertura", typeof(string)),
 			new DataColumn("Cierre",typeof(string)) });
 
-			//Read the contents of CSV file.  
 			string csvData = File.ReadAllText(csvPath);
 			string[] rows = csvData.Split('\n');
-
-			//Execute a loop over the rows.  
+ 
 			foreach (string row in rows)
 			{
 				if (!string.IsNullOrEmpty(row))
