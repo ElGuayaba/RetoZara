@@ -17,47 +17,35 @@ namespace RetoZara
 			return new DateTime(Int32.Parse(values[2]), month + 1, Int32.Parse(values[0]));
 		}
 
-		//public void ImportCSV(string csvPath)
-		//{
-		//	string[] tempStringA;
-		//	var tempDate;
-		//	var tempShare;
-		//	//Create a DataTable.  
-		//	DataTable dt = new DataTable();
-		//	dt.Columns.AddRange(new DataColumn[3] 
-		//	{new DataColumn("Fecha", typeof(string)),
-		//	new DataColumn("Apertura", typeof(string)),
-		//	new DataColumn("Cierre",typeof(string)) });
+		public void ImportCSV(string csvPath)
+		{
+			string[] tempStringA;
+			//var tempDate;
+			//var tempShare;
+			//Create a DataTable.  
+			DataTable dt = new DataTable();
+			dt.Columns.AddRange(new DataColumn[3]
+			{new DataColumn("Fecha", typeof(DateTime)),
+			new DataColumn("Apertura", typeof(string)),
+			new DataColumn("Cierre",typeof(string)) });
 
-		//	//Read the contents of CSV file.  
-		//	string csvData = File.ReadAllText(csvPath);
+			//Read the contents of CSV file.  
+			string csvData = File.ReadAllText(csvPath);
+			string[] rows = csvData.Split('\n');
 
-		//	//Execute a loop over the rows.  
-		//	foreach (string row in csvData.Split('\n'))
-		//	{
-		//		if (!string.IsNullOrEmpty(row))
-		//		{
-		//			dt.Rows.Add();
-		//			tempStringA = row.Split(',');
-		//			tempDate = new DateTime()
-		//			dt.Rows[dt.Rows.Count - 1][0] = ;
-
-
-		//			int i = 0;
-
-		//			//Execute a loop over the columns.  
-		//			foreach (string cell in row.Split(','))
-		//			{
-		//				dt.Rows[dt.Rows.Count - 1][i] = cell;
-		//				i++;
-		//			}
-		//		}
-		//	}
-
-		//	//Bind the DataTable.  
-		//	//GridView1.DataSource = dt;
-		//	//GridView1.DataBind();
-		//}
+			//Execute a loop over the rows.  
+			foreach (string row in rows)
+			{
+				if (!string.IsNullOrEmpty(row))
+				{
+					dt.Rows.Add();
+					tempStringA = row.Split(',');
+					dt.Rows[dt.Rows.Count - 1][0] = DateConverter(tempStringA[0]);
+					dt.Rows[dt.Rows.Count - 1][1] = tempStringA[1];
+					dt.Rows[dt.Rows.Count - 1][2] = tempStringA[2];
+				}
+			}
+		}
 		static void Main(string[] args)
 		{
 			FileManager fm = new FileManager();
