@@ -27,6 +27,8 @@ namespace RetoZara
 				temp = fechaPrev;
 				fechaPrev = fechaPrev.AddDays(1);
 			}
+			if (EsElDia(temp))
+				esUltima = true;
 			return temp;
 
 			//throw new NotImplementedException();
@@ -68,15 +70,16 @@ namespace RetoZara
 		/// </summary>
 		/// <param name="dia">Día en que el usuario cobra su salario</param>
 		/// <returns></returns>
-		public DateTime EsElDia(DateTime dia)
+		public bool EsElDia(DateTime dia)
 		{
-			throw new NotImplementedException();
+			int result = dia.CompareTo(new DateTime(2017, 12, 28));
+			return result == 0;
 		}
 
 		/// <summary>
-		/// Toma los valores del documento entregado y los asocia al parámetro "datos".
+		/// Utiliza el filemanager para cargar los datos.
 		/// </summary>
-		/// <param name="dia">Día en que el usuario cobra su salario</param>
+		/// <param name="path">Ruta del archivo con los datos</param>
 		/// <returns></returns>
 		public void ImportarTabla(string path)
 		{
