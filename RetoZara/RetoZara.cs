@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Data;
 
 namespace RetoZara
@@ -16,13 +17,15 @@ namespace RetoZara
 		/// <returns>
 		/// Fecha del siguiente pago del usuario en formato Datetime.
 		/// </returns>
-		public DateTime GetSiguientePaga(DateTime fechaPrev)
+		public DateTime SiguientePaga(DateTime fechaPrev)
 		{
 			DateTime temp = DateTime.Now;
-			fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 21);
+			if (fechaPrev.Month != 12)
+				fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 21);
+			else
+				fechaPrev = new DateTime(fechaPrev.Year + 1, 1, 21);
 			while (fechaPrev.Day <= 31 && fechaPrev.Day >= 21)
 			{
-				//Console.WriteLine("yes");
 				if (fechaPrev.DayOfWeek == DayOfWeek.Thursday)
 				temp = fechaPrev;
 				fechaPrev = fechaPrev.AddDays(1);
@@ -62,7 +65,14 @@ namespace RetoZara
 		/// <returns></returns>
 		public DateTime EncontrarCotizacion(DateTime paga)
 		{
-			throw new NotImplementedException();
+			var result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
+			while (!result.Any())
+			{
+				paga = paga.AddDays(1);
+				result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
+			}
+
+			return result.First().Field<DateTime>(0);
 		}
 
 		/// <summary>
@@ -83,7 +93,7 @@ namespace RetoZara
 		/// <returns></returns>
 		public void ImportarTabla(string path)
 		{
-			throw new NotImplementedException();
+			datos = FileManager.ImportCSV(path);
 		}
 
 		/// <summary>
@@ -98,7 +108,7 @@ namespace RetoZara
 			DateTime curDate = new DateTime(2001,5,23);
 			while (!esUltima)
 			{
-				curDate = GetSiguientePaga(curDate);
+				curDate = SiguientePaga(curDate);
 				curDate = EncontrarCotizacion(curDate);
 				ComprarAcciones(curDate);
 				EsElDia(curDate);
@@ -112,10 +122,18 @@ namespace RetoZara
 		public static void Main(String[] args)
 		{
 			//"C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv"
-			DateTime fecha = new DateTime(2001, 5, 23);
+			DateTime fecha = new DateTime(2002, 2, 21);
 			RetoZara rz = new RetoZara();
-			DateTime salida = rz.GetSiguientePaga(fecha);
+			DateTime salida = rz.SiguientePaga(fecha);
 			Console.WriteLine(salida);
+			rz.ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
+			for (int i = 0; i < 15; i++)
+			{
+				salida = rz.SiguientePaga(fecha);
+				salida = rz.EncontrarCotizacion(salida);
+				Console.WriteLine(salida);
+				fecha = fecha.AddMonths(1);
+			}
 			Console.ReadLine();
 		}
 	}

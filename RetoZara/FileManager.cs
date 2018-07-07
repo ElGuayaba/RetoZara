@@ -7,18 +7,18 @@ namespace RetoZara
 {
 	public class FileManager
 	{
-		private string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
+		private static string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
 			"jul", "ago", "sep", "oct", "nov", "dic" };
-		public NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+		public static NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 
-		public DateTime DateConverter(string date)
+		public static DateTime DateConverter(string date)
 		{
 			var values = date.Split('-');
 			int month = Array.IndexOf(calendar,values[1]);
 			return new DateTime(Int32.Parse(values[2]), month + 1, Int32.Parse(values[0]));
 		}
 
-		public DataTable ImportCSV(string csvPath)
+		public static DataTable ImportCSV(string csvPath)
 		{
 			string[] tempStringA;
 			DataTable dt = new DataTable();
