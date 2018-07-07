@@ -7,6 +7,7 @@ namespace RetoZara
 	{
 		decimal acciones { get; set; }
 		DataTable datos;
+		bool esUltima = false;
 		
 		/// <summary>
 		/// Calcula la próxima fecha en la que el usuario recibirá un pago.
@@ -17,19 +18,18 @@ namespace RetoZara
 		/// </returns>
 		public DateTime GetSiguientePaga(DateTime fechaPrev)
 		{
-			throw new NotImplementedException();
-		}
+			DateTime temp = DateTime.Now;
+			fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 21);
+			while (fechaPrev.Day <= 31 && fechaPrev.Day >= 21)
+			{
+				//Console.WriteLine("yes");
+				if (fechaPrev.DayOfWeek == DayOfWeek.Thursday)
+				temp = fechaPrev;
+				fechaPrev = fechaPrev.AddDays(1);
+			}
+			return temp;
 
-		/// <summary>
-		/// Retorna la primera fecha a evaluar
-		/// </summary>
-		/// <param name="dia">fecha del pago anterior</param>
-		/// <returns>
-		/// Fecha del siguiente pago del usuario en formato Datetime.
-		/// </returns>
-		public DateTime GetPrimerDia()
-		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -38,7 +38,17 @@ namespace RetoZara
 		/// </summary>
 		/// <param name="apertura">Valor de las acciones en el momento en que se compran</param>
 		/// <returns></returns>
-		public void ComprarAcciones(decimal apertura)
+		public void ComprarAcciones(DateTime diaDeCompra)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Vende acciones al precio de de cierre de la fecha dada.
+		/// </summary>
+		/// <param></param>
+		/// <returns></returns>
+		public decimal VenderAcciones()
 		{
 			throw new NotImplementedException();
 		}
@@ -78,11 +88,20 @@ namespace RetoZara
 		/// </summary>
 		/// <param name="dia">Día en que el usuario cobra su salario</param>
 		/// <returns></returns>
-		public DateTime CalcularValor(string path)
+		public decimal CalcularValor(string path)
 		{
+			decimal resultado;
 			ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
-			//select * from datos where "Fecha" == new DateTime(2001,05,23)
-			//...
+			DateTime curDate = new DateTime(2001,5,23);
+			while (!esUltima)
+			{
+				curDate = GetSiguientePaga(curDate);
+				curDate = EncontrarCotizacion(curDate);
+				ComprarAcciones(curDate);
+				EsElDia(curDate);
+			}
+			//return
+			resultado = VenderAcciones();
 			throw new NotImplementedException();
 		}
 
@@ -90,6 +109,11 @@ namespace RetoZara
 		public static void Main(String[] args)
 		{
 			//"C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv"
+			DateTime fecha = new DateTime(2001, 5, 23);
+			RetoZara rz = new RetoZara();
+			DateTime salida = rz.GetSiguientePaga(fecha);
+			Console.WriteLine(salida);
+			Console.ReadLine();
 		}
 	}
 }
