@@ -9,7 +9,7 @@ namespace RetoZara
 	{
 		private string[] calendar = {"ene", "feb", "mar" ,"abr", "may", "jun",
 			"jul", "ago", "sep", "oct", "nov", "dic" };
-		private NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
+		public NumberFormatInfo nfi = new CultureInfo("en-US", false).NumberFormat;
 
 		public DateTime DateConverter(string date)
 		{
