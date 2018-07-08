@@ -52,7 +52,7 @@ namespace RetoZara
 		/// <returns></returns>
 		public void ComprarAcciones(DataRow cotizacion)
 		{
-			decimal apertura = cotizacion.Field<decimal>(1);
+			decimal apertura = cotizacion.Field<decimal>(2);
 			decimal resultado = Decimal.Round(compra / apertura, 3);
 			acciones = acciones + resultado;
 		}
@@ -64,7 +64,7 @@ namespace RetoZara
 		/// <returns></returns>
 		public decimal VenderAcciones(DataRow cotizacion)
 		{
-			decimal cierre = cotizacion.Field<decimal>(2);
+			decimal cierre = cotizacion.Field<decimal>(1);
 			return Decimal.Round(acciones * cierre, 3);
 		}
 
