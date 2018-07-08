@@ -19,23 +19,30 @@ namespace RetoZara
 		/// </returns>
 		public DateTime SiguientePaga(DateTime fechaPrev)
 		{
-			DateTime temp = DateTime.Now;
 			if (fechaPrev.Month != 12)
-				fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 21);
+				fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 22);
 			else
-				fechaPrev = new DateTime(fechaPrev.Year + 1, 1, 21);
-			while (fechaPrev.Day <= 31 && fechaPrev.Day >= 21)
+				fechaPrev = new DateTime(fechaPrev.Year + 1, 1, 22);
+
+			return UltimoJueves(fechaPrev);
+		}
+
+		public DateTime UltimoJueves(DateTime fecha)
+		{
+			DateTime temp = DateTime.Now;
+			fecha = new DateTime(fecha.Year, fecha.Month, 22);
+			while (fecha.Day <= 31 && fecha.Day > 21)
 			{
-				if (fechaPrev.DayOfWeek == DayOfWeek.Thursday)
-				temp = fechaPrev;
-				fechaPrev = fechaPrev.AddDays(1);
+				if (fecha.DayOfWeek == DayOfWeek.Thursday)
+					temp = fecha;
+				fecha = fecha.AddDays(1);
 			}
 			if (EsElDia(temp))
 				esUltima = true;
 			return temp;
-
-			//throw new NotImplementedException();
 		}
+
+
 
 		/// <summary>
 		/// Compra acciones al precio de apertura dado tomando en cuenta la
@@ -103,9 +110,13 @@ namespace RetoZara
 		/// <returns></returns>
 		public decimal CalcularValor(string path)
 		{
-			decimal resultado;
 			ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
 			DateTime curDate = new DateTime(2001,5,23);
+			curDate = UltimoJueves(curDate);
+			curDate = EncontrarCotizacion(curDate);
+			ComprarAcciones(curDate);
+			EsElDia(curDate);
+
 			while (!esUltima)
 			{
 				curDate = SiguientePaga(curDate);
@@ -114,25 +125,25 @@ namespace RetoZara
 				EsElDia(curDate);
 			}
 			//return
-			resultado = VenderAcciones();
+			VenderAcciones();
 			throw new NotImplementedException();
 		}
 
 
 		public static void Main(String[] args)
 		{
-			//"C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv"
-			DateTime fecha = new DateTime(2002, 2, 21);
+			DateTime fecha = new DateTime(2001, 5, 23);
 			RetoZara rz = new RetoZara();
-			DateTime salida = rz.SiguientePaga(fecha);
-			Console.WriteLine(salida);
 			rz.ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
-			for (int i = 0; i < 15; i++)
+			DateTime salida = rz.UltimoJueves(fecha);
+			salida = rz.EncontrarCotizacion(salida);
+			Console.WriteLine(salida);
+			for (int i = 0; i < 5; i++)
 			{
-				salida = rz.SiguientePaga(fecha);
+				salida = rz.SiguientePaga(salida);
 				salida = rz.EncontrarCotizacion(salida);
 				Console.WriteLine(salida);
-				fecha = fecha.AddMonths(1);
+				//fecha = fecha.AddMonths(1);
 			}
 			Console.ReadLine();
 		}
