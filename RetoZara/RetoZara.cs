@@ -75,6 +75,7 @@ namespace RetoZara
 		/// <returns></returns>
 		public DataRow EncontrarCotizacion(DateTime paga)
 		{
+			paga = paga.AddDays(1);
 			var result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
 			while (!result.Any())
 			{
