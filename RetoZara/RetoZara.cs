@@ -7,9 +7,10 @@ namespace RetoZara
 	public class RetoZara
 	{
 		decimal acciones { get; set; }
+		decimal compra = 49;
 		DataTable datos;
 		bool esUltima = false;
-		
+
 		/// <summary>
 		/// Calcula la próxima fecha en la que el usuario recibirá un pago.
 		/// </summary>
@@ -19,14 +20,15 @@ namespace RetoZara
 		/// </returns>
 		public DateTime SiguientePaga(DateTime fechaPrev)
 		{
-			if (fechaPrev.Month != 12)
-				fechaPrev = new DateTime(fechaPrev.Year, fechaPrev.Month + 1, 22);
-			else
-				fechaPrev = new DateTime(fechaPrev.Year + 1, 1, 22);
-
+			fechaPrev = fechaPrev.AddMonths(1);
 			return UltimoJueves(fechaPrev);
 		}
 
+		/// <summary>
+		/// Calcula el último jueves del mes.
+		/// </summary>
+		/// <param name="fecha">Fecha de partida.</param>
+		/// <returns></returns>
 		public DateTime UltimoJueves(DateTime fecha)
 		{
 			DateTime temp = DateTime.Now;
@@ -42,17 +44,17 @@ namespace RetoZara
 			return temp;
 		}
 
-
-
 		/// <summary>
 		/// Compra acciones al precio de apertura dado tomando en cuenta la
 		/// comisión del eskrow. Lo acumula todo en la propiedad "acciones".
 		/// </summary>
-		/// <param name="apertura">Valor de las acciones en el momento en que se compran</param>
+		/// <param name="cotizacion">La Fila de la tabla que contiene el valor de la cotizacion</param>
 		/// <returns></returns>
-		public void ComprarAcciones(DateTime diaDeCompra)
+		public void ComprarAcciones(DataRow cotizacion)
 		{
-			throw new NotImplementedException();
+			decimal apertura = cotizacion.Field<decimal>(2);
+			decimal resultado = Decimal.Round(compra / apertura, 3);
+			acciones = acciones + resultado;
 		}
 
 		/// <summary>
@@ -60,9 +62,10 @@ namespace RetoZara
 		/// </summary>
 		/// <param></param>
 		/// <returns></returns>
-		public decimal VenderAcciones()
+		public decimal VenderAcciones(DataRow cotizacion)
 		{
-			throw new NotImplementedException();
+			decimal cierre = cotizacion.Field<decimal>(1);
+			return Decimal.Round(acciones * cierre, 3);
 		}
 
 		/// <summary>
@@ -70,17 +73,18 @@ namespace RetoZara
 		/// </summary>
 		/// <param name="paga">Día en que el usuario cobra su salario</param>
 		/// <returns></returns>
-		public DateTime EncontrarCotizacion(DateTime paga)
+		public DataRow EncontrarCotizacion(DateTime paga)
 		{
 			paga = paga.AddDays(1);
 			var result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
 			while (!result.Any())
 			{
 				paga = paga.AddDays(1);
+				//Console.WriteLine(paga);
 				result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
 			}
 
-			return result.First().Field<DateTime>(0);
+			return result.First();
 		}
 
 		/// <summary>
@@ -111,23 +115,26 @@ namespace RetoZara
 		/// <returns></returns>
 		public decimal CalcularValor(string path)
 		{
-			ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
-			DateTime curDate = new DateTime(2001,5,23);
+			ImportarTabla(path);
+			DateTime curDate = new DateTime(2001, 5, 23);
+			DataRow cotizacion;
+
 			curDate = UltimoJueves(curDate);
-			curDate = EncontrarCotizacion(curDate);
-			ComprarAcciones(curDate);
+			cotizacion = EncontrarCotizacion(curDate);
+			curDate = cotizacion.Field<DateTime>(0);
+			ComprarAcciones(cotizacion);
 			EsElDia(curDate);
 
-			while (!esUltima)
+			while (!EsElDia(curDate))
 			{
 				curDate = SiguientePaga(curDate);
-				curDate = EncontrarCotizacion(curDate);
-				ComprarAcciones(curDate);
-				EsElDia(curDate);
+				if (EsElDia(curDate))
+					break;
+				cotizacion = EncontrarCotizacion(curDate);
+				ComprarAcciones(cotizacion);
 			}
-			//return
-			VenderAcciones();
-			throw new NotImplementedException();
+			return VenderAcciones(cotizacion);
+			//throw new NotImplementedException();
 		}
 
 
@@ -135,17 +142,8 @@ namespace RetoZara
 		{
 			DateTime fecha = new DateTime(2001, 5, 23);
 			RetoZara rz = new RetoZara();
-			rz.ImportarTabla("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
-			DateTime salida = rz.UltimoJueves(fecha);
-			salida = rz.EncontrarCotizacion(salida);
-			Console.WriteLine(salida);
-			for (int i = 0; i < 5; i++)
-			{
-				salida = rz.SiguientePaga(salida);
-				salida = rz.EncontrarCotizacion(salida);
-				Console.WriteLine(salida);
-				//fecha = fecha.AddMonths(1);
-			}
+			decimal resultado = rz.CalcularValor("C:/Users/formacion/Desktop/Curso/Reto_Zara/stocks-ITX.csv");
+			Console.WriteLine(resultado);
 			Console.ReadLine();
 		}
 	}
