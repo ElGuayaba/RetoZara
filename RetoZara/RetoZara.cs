@@ -80,7 +80,6 @@ namespace RetoZara
 			while (!result.Any())
 			{
 				paga = paga.AddDays(1);
-				//Console.WriteLine(paga);
 				result = datos.AsEnumerable().Where(rows => rows.Field<DateTime>(0).Equals(paga));
 			}
 
@@ -121,20 +120,16 @@ namespace RetoZara
 
 			curDate = UltimoJueves(curDate);
 			cotizacion = EncontrarCotizacion(curDate);
-			curDate = cotizacion.Field<DateTime>(0);
 			ComprarAcciones(cotizacion);
-			EsElDia(curDate);
+			curDate = SiguientePaga(curDate);
 
 			while (!EsElDia(curDate))
 			{
-				curDate = SiguientePaga(curDate);
-				if (EsElDia(curDate))
-					break;
 				cotizacion = EncontrarCotizacion(curDate);
 				ComprarAcciones(cotizacion);
+				curDate = SiguientePaga(curDate);
 			}
 			return VenderAcciones(cotizacion);
-			//throw new NotImplementedException();
 		}
 
 
