@@ -6,8 +6,11 @@ Durante la solución, una vez se han cargado los datos se entra en un ciclo que 
 -Identificamos, desde la fecha de partida, el úlimo jueves del mes.
 -El día siguiente, si hubo cotización en la bolsa, se compran 49 euros en acciones de la empresa
 -si no hubo, se itera día por día hasta encontrar una fecha donde se haya cotizado y se hace la compra
--las acciones compradas se acumulan en una variable de clase
--durante cada operación, se redondea a 3 decimales de precisión
+
+>>las acciones compradas se acumulan en una variable de clase
+>>durante cada operación, se redondea a 3 decimales de precisión
+>>las consultas se hacen usando linq to DataTable
+
 -se evalúa si el día actual es el último día
 
 Una vez se cumple la condición de salida:
