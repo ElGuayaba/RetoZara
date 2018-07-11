@@ -1,0 +1,16 @@
+La siguiente solución resuelve el problema planteado en el Reto Zara.
+
+Para empezar se ha creado una clase para manejar la lectura de los datos desde el CSV. Esta toma los datos y los coloca en un objeto tipo DataTable con tres columnas de tipo DateTime, Decimal y Decimal respectivamente.
+
+Durante la solución, una vez se han cargado los datos se entra en un ciclo que efectua las siguientes operaciones en un ciclo:
+-Identificamos, desde la fecha de partida, el úlimo jueves del mes.
+-El día siguiente, si hubo cotización en la bolsa, se compran 49 euros en acciones de la empresa
+-si no hubo, se itera día por día hasta encontrar una fecha donde se haya cotizado y se hace la compra
+-las acciones compradas se acumulan en una variable de clase
+-durante cada operación, se redondea a 3 decimales de precisión
+-se evalúa si el día actual es el último día
+
+Una vez se cumple la condición de salida:
+-Se lee el precio de las acciones al cierre
+-se multiplica este valor por la cantidad de acciones compradas
+-se imprime el resultado
